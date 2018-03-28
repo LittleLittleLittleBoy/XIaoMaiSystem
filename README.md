@@ -131,7 +131,7 @@ J2EE big homework
 
 1. 工程的项目结构截图；
 
-	![](img/dir.png)
+	![](img/dir.jpg)
 
 2. 是否使用框架，如Spring+Hibernate 架构；
 
