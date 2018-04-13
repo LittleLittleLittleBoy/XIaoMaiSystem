@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Theater</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+    <script src="/js/theaterinformation.js"></script>
+</head>
+<style type="text/css">
+    .seatButton{
+        width: 20px;
+        height: 20px;
+        padding: 0px;
+        background-color: lightgray;
+        margin: 2px;
+    }
+    .signButton{
+        width: 20px;
+        height: 20px;
+        margin-left: 10px;
+        padding: 0px;
+    }
+</style>
+
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">Xiaomai</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/information">Information</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/statistics">Statistics</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <button class="ml-2 btn btn-outline-success my-2 my-sm-0" onclick="location.href='/logout'">Logout</button>
+            </ul>
+        </div>
+    </nav>
+</header>
+<div class="container mt-4" style="margin-left: 15%;width: 70%">
+    <h2>Basic Information</h2>
+    <table class="table table-hover">
+
+        <tbody>
+        <tr >
+            <th class="font-weight-bold">ID</th>
+            <td th:text="${theaterInfo.theaterid}">0000001</td>
+        </tr>
+        <tr>
+            <th class="font-weight-bold">Name</th>
+            <td th:text="${theaterInfo.name}">影院</td>
+        </tr>
+        <tr>
+            <th class="font-weight-bold">Place</th>
+            <td th:text="${theaterInfo.place}">南京</td>
+        </tr>
+        <tr>
+            <th class="font-weight-bold">Email</th>
+            <td th:text="${theaterInfo.email}">1150170525@qq.com</td>
+        </tr>
+        <tr>
+            <th class="font-weight-bold">Money</th>
+            <td th:text="${theaterInfo.money}">0</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2 style="margin-top: 30px">Room Information</h2>
+    <table class="table table-hover">
+
+        <tbody>
+        <tr>
+            <th>Room Type</th>
+            <th>Rows</th>
+            <th>Cols</th>
+            <th>Preview</th>
+        </tr>
+        <tr th:each="room:${rooms}">
+            <td th:text="${room.roomid}">Room1</td>
+            <td th:text="${room.row}">10</td>
+            <td th:text="${room.col}">10</td>
+            <th><button class="btn btn-primary" th:onclick="'javascript:displayRoom(\''+${room.roominfo}+'\');'">Preview</button></th>
+        </tr>
+
+        </tbody>
+    </table>
+
+    <div id="showRooms">
+
+    </div>
+
+</div>
+</body>
+</html>

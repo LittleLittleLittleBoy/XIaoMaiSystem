@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Theaters</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/4.0.4/echarts.min.js"></script>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">Xiaomai</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/information">Information</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/statistics">Statistics</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <span class="navbar-text">
+                    Hello,<span th:text="${name}">匿名用户</span>
+                </span>
+                <button class="ml-2 btn btn-outline-success my-2 my-sm-0" onclick="location.href='/logout'">Logout</button>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div style="margin-top: 100px;margin-left: 15%;margin-right: 15%">
+    <p id="vipinfo" th:value="${vipInfo}"></p>
+    <div id="vip" style="width: 600px;height:400px;"></div>
+
+    <p id="moneyinfo" th:value="${moneyInfo}"></p>
+    <div id="money" style="width: 600px;height:400px;"></div>
+
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('vip'));
+        var vipInfo=JSON.parse(document.getElementById("vipinfo").getAttribute("value"));
+
+
+        option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                data:['vip5','vip4','vip3','vip2','vip1']
+            },
+            series: [
+                {
+                    name:'VIP分布',
+                    type:'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '30',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data:vipInfo
+                }
+            ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+
+        var moneyChart = echarts.init(document.getElementById('money'));
+        var moneyInfo=JSON.parse(document.getElementById("moneyinfo").getAttribute("value"));
+
+        option1 = {
+            title : {
+                text: '财务数据',
+            },
+            tooltip : {
+                trigger: 'axis'
+            },
+            legend: {
+                data:['购买金额','退票金额']
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            calculable : true,
+            xAxis : [
+                {
+                    type : 'category',
+                    data : moneyInfo.dates
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            series : [
+                {
+                    name:'购买金额',
+                    type:'bar',
+                    data:moneyInfo.buys,
+                },
+                {
+                    name:'退票金额',
+                    type:'bar',
+                    data:moneyInfo.cancels,
+                }
+            ]
+        };
+
+        moneyChart.setOption(option1);
+
+    </script>
+</div>
+
+</body>
+</html>

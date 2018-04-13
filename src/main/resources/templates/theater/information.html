@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Theater</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+    <script src="/js/theaterinformation.js"></script>
+</head>
+<style type="text/css">
+    .seatButton{
+        width: 20px;
+        height: 20px;
+        padding: 0px;
+        background-color: lightgray;
+        margin: 2px;
+    }
+    .signButton{
+        width: 20px;
+        height: 20px;
+        margin-left: 10px;
+        padding: 0px;
+    }
+</style>
+
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">Xiaomai</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/theater/myAllShow">Shows</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/theater/information">Information</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/theater/statistics">Statistics</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <button class="ml-2 btn btn-outline-success my-2 my-sm-0" onclick="location.href='/logout'">Logout</button>
+            </ul>
+        </div>
+    </nav>
+</header>
+<div class="container mt-4" style="margin-left: 15%;width: 70%">
+    <h2>Basic Information</h2>
+    <table class="table table-hover">
+
+        <tbody>
+        <tr >
+            <th class="font-weight-bold">ID</th>
+            <td th:text="${theaterInfo.theaterid}">0000001</td>
+        </tr>
+        <tr>
+            <th class="font-weight-bold">Name</th>
+            <td th:text="${theaterInfo.name}">影院</td>
+        </tr>
+        <tr>
+            <th class="font-weight-bold">Place</th>
+            <td th:text="${theaterInfo.place}">南京</td>
+        </tr>
+        <tr>
+            <th class="font-weight-bold">Email</th>
+            <td th:text="${theaterInfo.email}">1150170525@qq.com</td>
+        </tr>
+        <tr>
+            <th class="font-weight-bold">Money</th>
+            <td th:text="${theaterInfo.money}">0</td>
+        </tr>
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+        Change Basic Information
+    </button>
+
+    <!-- 模态框 -->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+
+                <!-- 模态框主体 -->
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="usernameInput" class="col-form-label">Username:</label>
+                            <input type="text" class="form-control" name="username" id="usernameInput"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="placeInput" class="col-form-label">Place:</label>
+                            <input type="text" class="form-control" name="place" id="placeInput"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="emailInput" class="col-form-label">Email:</label>
+                            <input type="email" class="form-control" name="email" id="emailInput"/>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="changeInformation()">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <h2 style="margin-top: 30px">Room Information</h2>
+    <table class="table table-hover">
+
+        <tbody>
+        <tr>
+            <th>Room Type</th>
+            <th>Rows</th>
+            <th>Cols</th>
+            <th>Preview</th>
+            <th>Delete</th>
+        </tr>
+        <tr th:each="room:${rooms}">
+            <td th:text="${room.roomid}">Room1</td>
+            <td th:text="${room.row}">10</td>
+            <td th:text="${room.col}">10</td>
+            <th><button class="btn btn-primary" th:onclick="'javascript:displayRoom(\''+${room.roominfo}+'\');'">Preview</button></th>
+            <th><button class="btn btn-danger" th:onclick="'javascript:deleteRoom(\''+${room.roomid}+'\');'">Delete</button></th>
+        </tr>
+
+        </tbody>
+    </table>
+
+    <div id="showRooms">
+
+    </div>
+    <div id="createRoom">
+        <h3>Create panel</h3>
+        <div>
+            <span>rows</span><input type="number" id="roomRows"/>
+            <span>cols</span><input type="number" id="roomCols"/>
+            <span>name</span><input type="text" id="roomNameInput"/>
+            <button class="btn btn-primary" onclick="createRoom()">Create</button>
+            <button class="btn btn-primary" onclick="saveRoom()">Save</button>
+        </div>
+        <div>
+            <button id="emptyChoose" class="btn signButton" onclick="changeChoose(0)" style="background-color: lightgray">✓</button>Empty
+            <button id="primaryChoose" class="btn signButton" onclick="changeChoose(1)" style="background-color: gray"></button>Primary seats
+            <button id="intermediateChoose" class="btn signButton" onclick="changeChoose(2)" style="background-color: coral"></button>Intermediate seats
+            <button id="advancedChoose" class="btn signButton" onclick="changeChoose(3)" style="background-color: indianred"></button>Advanced seats
+        </div>
+        <div id="seatPanel">
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    function changeInformation(){
+        var userName=$("#usernameInput").val();
+        var place=$("#placeInput").val();
+        var email=$('#emailInput').val();
+
+        $.post("/theater/changeInformation",
+            {
+                "userName":userName,
+                "place":place,
+                "email":email
+            },function (result) {
+                if (result=='true'){
+                    alert("成功提交申请，请等待管理员审核")
+                }
+            })
+    }
+</script>
+</body>
+</html>

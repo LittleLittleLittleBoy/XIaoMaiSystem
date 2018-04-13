@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Statistics</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">Xiaomai</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/allShows">Find</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/getAllTicket">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/information">Information</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/statistics">Statistics</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <span class="navbar-text">
+                    Hello,<span th:text="${name}">匿名用户</span>
+                </span>
+                <button class="ml-2 btn btn-outline-success my-2 my-sm-0" onclick="location.href='/logout'">Logout</button>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div style="margin-top: 100px;margin-left: 30%;margin-right: 30%">
+    <h2>Statistics</h2>
+    <p>You have bought <span th:text="${allTicket}">0</span> tickets</p>
+    <p>Canceled <span th:text="${cancelTicket}">0</span> tickets</p>
+    <p>Total spent <span th:text="${totalMoney}">0</span> ¥</p>
+
+</div>
+
+</body>
+</html>

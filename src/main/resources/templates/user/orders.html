@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8"/>
+    <title>User</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <script src="/js/userOrder.js"></script>
+</head>
+<script type="text/javascript">
+    var chooseTicketid;
+
+    function setTicketid(ticketid) {
+        chooseTicketid=ticketid;
+    }
+
+    function cancelTicket() {
+        $.post("/user/cancelTicket",{
+            "ticketid":chooseTicketid
+        },function (message) {
+            alert(message);
+            if (message=='退票成功'){
+                window.location.href='/user/getAllTicket';
+            }
+        })
+    }
+</script>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">Xiaomai</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/allShows">Find</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/getAllTicket">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/information">Information</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/statistics">Statistics</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <span class="navbar-text">
+                    Hello,<span th:text="${name}">匿名用户</span>
+                </span>
+                <button class="ml-2 btn btn-outline-success my-2 my-sm-0" onclick="location.href='/logout'">Logout</button>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div style="margin-top: 100px;margin-left: 15%;margin-right: 15%">
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link" href="/user/getAllTicket">全部订单</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/user/getFutureTicket">未开始订单</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/user/getUnpayTicket">未支付订单</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/user/getCompleteTicket">已完成订单</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/user/getCancelTicket">取消订单</a>
+        </li>
+    </ul>
+
+    <div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Ticket Number</th>
+                <th>Show</th>
+                <th>Theater</th>
+                <th>Time</th>
+                <th>Email</th>
+                <th>Position</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Operation</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ticket:${tickets}">
+                <td th:text="${ticket.ticketid}">asdasdyewv12vge3vvjsbd</td>
+                <td th:text="${ticket.showTitle}">音乐会标题</td>
+                <td th:text="${ticket.theaterName}">红旗</td>
+                <td th:text="${ticket.showtime}">2017-01-01</td>
+                <td th:text="${ticket.userEmail}">1150170525@qq.com</td>
+                <td th:text="${ticket.position}">四排五座</td>
+                <td th:text="${ticket.price}">100.00</td>
+                <td th:text="${ticket.status}">已支付</td>
+                <!--已支付的订单-->
+                <td th:switch="${ticket.status}">
+                    <div th:case="'未开始'">
+                        <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#showTicketModal" onclick="showQRCode('asdasdyewv12vge3vvjsbd')">Show</button>-->
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#showTicketModal" th:onclick="'javascript:showQRCode(\''+${ticket.ticketid}+'\');'">Show</button>
+
+                        <button type="button" th:value="${ticket.ticketid}" class="btn btn-primary" data-toggle="modal" th:onclick="'javascript:setTicketid(\''+${ticket.ticketid}+'\');'" data-target="#cancelTicketModal" >Cancel</button>
+                    </div>
+                    <form th:case="'未支付'" method="post" action="/user/showTicketInfo">
+                        <input type="hidden"  name="ticketid" th:value="${ticket.ticketid}"/>
+                        <button  type="submit" class="btn btn-primary">Pay</button>
+                    </form>
+
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="showTicketModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Ticket</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="qrcode" style="margin-left: 20%;margin-right: 20%">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="cancelTicketModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ticket</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure?</p>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="cancelTicket()">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
